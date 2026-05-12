@@ -1,7 +1,8 @@
-const Header = () => {
+const Header = (props) => {
+    const { userName } = props;
     return (
         <div>
-            Header
+            Bem-vindo(a), {userName}
         </div>
     );
 };

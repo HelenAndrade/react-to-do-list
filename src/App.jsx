@@ -1,4 +1,4 @@
-import { Header } from './components';
+import { Header, Content } from './components';
 
 import './App.css';
 
@@ -6,8 +6,11 @@ const App = () => {
 
   return (
     <>
-      <Header/>
-      <h1>Hello World</h1>
+      <Header userName="Hélen" />
+      <Content>
+        <h1>Titulo</h1>
+        <p>Texto texto texto</p>
+      </Content>
     </>
   )
 };
