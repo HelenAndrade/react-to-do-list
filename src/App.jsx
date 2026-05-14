@@ -1,4 +1,5 @@
 import { Header, Content, Footer } from './components';
+import { Home } from './pages';
 
 import './App.css';
 
@@ -7,8 +8,7 @@ const App = () => {
     <>
       <Header />
       <Content>
-        <h1>Titulo</h1>
-        <p>Texto texto texto</p>
+        <Home />
       </Content>
       <Footer creator="Hélen Andrade" />
     </>
