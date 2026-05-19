@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom';
 
-import { AppContextProvider } from './contexts/AppContext';
+import { AppContextProvider } from './contexts/AppContext.jsx';
 
 import { Router } from './Router';
 

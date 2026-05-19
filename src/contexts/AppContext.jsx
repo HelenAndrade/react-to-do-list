@@ -1,25 +1,24 @@
-import { createContext, useState } from 'react';
 
-export const AppContext = createContext({});
+import { useEffect, useState } from 'react';
+
+import { api } from '../services';
+import { AppContext } from './AppContext';
 
 export const AppContextProvider = (props) => {
     const { children } = props;
 
-    const [creator, setCreator] = useState('Hélen Andrade');
+    const [creator] = useState('Hélen Andrade');
 
-    const [tasks, setTasks] = useState([
-        {id: 1, name: 'Item 1'},
-        {id: 2, name: 'Item 2'},
-        {id: 3, name: 'Item 3'},
-    ]);
+    const [tasks, setTasks] = useState([]);
+
     
-    const addTask = (taskName) => {
+    
+    const addTask = async (taskName) => {
+        const { data: task } = await api.post('/tasks', {
+            name: taskName,
+        });
+
         setTasks(currentState => {
-            const task = {
-                id: currentState.length + 1,
-                name: taskName,
-            };
-            
             return [
                 ...currentState,
                 task,
@@ -27,12 +26,16 @@ export const AppContextProvider = (props) => {
         });
     };
 
-    const editTask = (id, taskName) => {
+    const editTask = async (idTask, taskName) => {
+        const { data: editedTask } = await api.put(`tasks/${idTask}`, {
+            name: taskName,
+        });
+
         setTasks(currentState => {
             const editedTasks = currentState.map(task => {
-                return task.id == id ? {
+                return task.id == idTask ? {
                     ...task,
-                    name: taskName,
+                    name: editedTask.name,
                 } : task;
             });
 
@@ -42,7 +45,9 @@ export const AppContextProvider = (props) => {
         });
     };
 
-    const removeTask = (idTask) => {
+    const removeTask = async (idTask) => {
+        await api.delete(`tasks/${idTask}`);
+
         setTasks(currentState => {
             const updatedTasks = currentState.filter(task => task.id != idTask);
 
@@ -51,6 +56,18 @@ export const AppContextProvider = (props) => {
             ]
         })
     };
+
+    useEffect(() => {
+        const loadTasks = async () => {
+            const { data = [] } = await api.get('/tasks');
+
+            setTasks([
+            ...data,
+            ])
+        };
+        
+        loadTasks();
+    }, []);
 
     return (
         <AppContext.Provider value={{
