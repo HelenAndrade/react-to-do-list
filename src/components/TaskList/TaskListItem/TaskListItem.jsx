@@ -1,4 +1,6 @@
-import { Button, TYPE_BUTTON } from "../../../components";
+import { useState } from "react";
+
+import { Button, TextBox, TYPE_BUTTON } from "../../../components";
 import { useAppContext } from "../../../hooks";
 
 import style from './TaskListItem.module.css'
@@ -6,11 +8,25 @@ import style from './TaskListItem.module.css'
 const TaskListItem = (props) => {
     const { id, taskName } = props;
 
-    const { removeTask } = useAppContext();
+    const [isEditing, setIsEditing] = useState(false);
+
+    const { editTask, removeTask } = useAppContext();
 
     return (
         <li className={style.TaskListItem}>
-            {taskName}
+            {isEditing && (
+                <TextBox 
+                    defaultValue={taskName}
+                    onChange={event => editTask(id, event.currentTarget.value)} 
+                    onBlur={() => setIsEditing(false)}
+                    autoFocus
+                />
+            )}
+            {!isEditing && (
+                <span onDoubleClick={() => setIsEditing(true)}>
+                    {taskName}
+                </span>
+            )}
             <Button 
                 text="-" 
                 type={TYPE_BUTTON.SECONDARY}
