@@ -1,41 +1,33 @@
 import { useState } from 'react';
 
 import { Button, TextBox } from '../../components';
+import { useAppContext } from '../../hooks';
 
 import style from './FormCreateTask.module.css'
 
-const FormCreateTask = (props) => {
-const [taskName, setTaskName] = useState('');
-
-    const { setTasks } = props;
+const FormCreateTask = () => {
+    const { addTask } = useAppContext();
+    
+    const [taskName, setTaskName] = useState('');
 
     const onChangeTaskName = (event) => {
-        setTaskName(event.currentTarget.value)
+        setTaskName(event.currentTarget.value);
     };
 
-    const addTask = (event) => {
+    const submitForm = (event) => {
         event.preventDefault();
 
         if(!taskName) {
             return;
         }
 
-        setTasks(currentState => {
-            const task = {
-                id: currentState.length + 1,
-                name: taskName,
-            };
-            return [
-                ...currentState,
-                task,
-            ];
-        });
+        addTask(taskName);
 
         setTaskName('');
     };
 
     return (
-        <form className={style.FormCreateTask} onSubmit={addTask} >
+        <form className={style.FormCreateTask} onSubmit={submitForm} >
             <TextBox 
                 value={taskName} 
                 onChange={onChangeTaskName} 
