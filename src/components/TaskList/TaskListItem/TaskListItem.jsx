@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { Button, TextBox, TYPE_BUTTON } from "../../../components";
+import { Button, Loading, TextBox, TYPE_BUTTON } from "../../../components";
 import { useAppContext } from "../../../hooks";
 
 import style from './TaskListItem.module.css'
@@ -10,25 +10,41 @@ const TaskListItem = (props) => {
 
     const [isEditing, setIsEditing] = useState(false);
 
-    const { editTask, removeTask } = useAppContext();
+    const { loadingEdit, loadingDelete, editTask, removeTask } = useAppContext();
+
+    const onBlurTask = (event) => {
+        const taskName = event.currentTarget.value;
+
+        editTask(id, taskName);
+
+        setIsEditing(false);
+    };
+
+    const loadingIsEditing = loadingEdit == id;
+    const loadingIsDeleting = loadingDelete == id;
 
     return (
         <li className={style.TaskListItem}>
-            {isEditing && (
+            {(loadingIsEditing || isEditing) && (
                 <TextBox 
                     defaultValue={taskName}
-                    onChange={event => editTask(id, event.currentTarget.value)} 
-                    onBlur={() => setIsEditing(false)}
+                    onBlur={onBlurTask}
                     autoFocus
                 />
             )}
-            {!isEditing && (
+
+            {(!loadingIsEditing && !isEditing) && (
                 <span onDoubleClick={() => setIsEditing(true)}>
                     {taskName}
                 </span>
             )}
+
+            {loadingIsEditing && (
+                <Loading />
+            )}
+
             <Button 
-                text="-" 
+                text={loadingIsDeleting ? <Loading /> : "-"}
                 type={TYPE_BUTTON.SECONDARY}
                 onClick={() => removeTask(id)} />
         </li>

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import { Button, TextBox } from '../../components';
+import { Button, Loading, TextBox } from '../../components';
 import { useAppContext } from '../../hooks';
 
 import style from './FormCreateTask.module.css'
 
 const FormCreateTask = () => {
-    const { addTask } = useAppContext();
+    const { addTask, loadingCreate } = useAppContext();
     
     const [taskName, setTaskName] = useState('');
 
@@ -32,7 +32,7 @@ const FormCreateTask = () => {
                 value={taskName} 
                 onChange={onChangeTaskName} 
             />
-            <Button text="+"/>
+            <Button text={loadingCreate ? <Loading /> : '+'}/>
         </form>
     );
 };

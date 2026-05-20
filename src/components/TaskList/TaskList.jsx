@@ -1,17 +1,25 @@
 import { useAppContext } from "../../hooks";
 
-import { TaskListItem } from "../../components";
+import { Loading, TaskListItem } from "../../components";
 
 import style from './TaskList.module.css'
 
 const TaskList = () => {
-    const { tasks } = useAppContext();
+    const { tasks, loadingFetch } = useAppContext();
 
     return (
         <ul className={style.TaskList}>
-            {!tasks.length && (
+            {loadingFetch && (
+                <p>
+                    Carregando... 
+                    <Loading />
+                </p>
+            )}
+
+            {!loadingFetch && !tasks.length && (
                 <p>Não há tarefas cadastradas</p>
             )}
+            
             {tasks.map(item => (
                 <TaskListItem 
                     key={item.id} 

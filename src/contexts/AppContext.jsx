@@ -11,9 +11,14 @@ export const AppContextProvider = (props) => {
 
     const [tasks, setTasks] = useState([]);
 
-    
+    const [loadingFetch, setLoadingFetch] = useState(false);
+    const [loadingCreate, setLoadingCreate] = useState(false);
+    const [loadingEdit, setLoadingEdit] = useState(null);
+    const [loadingDelete, setLoadingDelete] = useState(null);
     
     const addTask = async (taskName) => {
+        setLoadingCreate(true);
+
         const { data: task } = await api.post('/tasks', {
             name: taskName,
         });
@@ -24,9 +29,13 @@ export const AppContextProvider = (props) => {
                 task,
             ];
         });
+
+        setLoadingCreate(false);
     };
 
     const editTask = async (idTask, taskName) => {
+        setLoadingEdit(idTask);
+
         const { data: editedTask } = await api.put(`tasks/${idTask}`, {
             name: taskName,
         });
@@ -43,9 +52,13 @@ export const AppContextProvider = (props) => {
                 ...editedTasks,
             ]
         });
+
+        setLoadingEdit(null);
     };
 
     const removeTask = async (idTask) => {
+        setLoadingDelete(idTask);
+
         await api.delete(`tasks/${idTask}`);
 
         setTasks(currentState => {
@@ -54,16 +67,21 @@ export const AppContextProvider = (props) => {
             return [
                 ...updatedTasks,
             ]
-        })
+        });
+
+        setLoadingDelete(null);
     };
 
     useEffect(() => {
         const loadTasks = async () => {
+            setLoadingFetch(true);
             const { data = [] } = await api.get('/tasks');
 
             setTasks([
             ...data,
-            ])
+            ]);
+
+            setLoadingFetch(false);
         };
         
         loadTasks();
@@ -76,6 +94,10 @@ export const AppContextProvider = (props) => {
             addTask,
             removeTask,
             editTask,
+            loadingFetch,
+            loadingCreate,
+            loadingEdit,
+            loadingDelete,
         }}>
             {children}
         </AppContext.Provider>
